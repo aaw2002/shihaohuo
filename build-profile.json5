@@ -26,8 +26,8 @@
   },
   "modules": [
     {
-      "name": "entry",
-      "srcPath": "./entry",
+      "name": "phone",
+      "srcPath": "./products/phone",
       "targets": [
         {
           "name": "default",
@@ -40,6 +40,54 @@
     {
       "name": "basic",
       "srcPath": "./commons/basic",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "my",
+      "srcPath": "./features/my",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cart",
+      "srcPath": "./features/cart",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "home",
+      "srcPath": "./features/home",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "category",
+      "srcPath": "./features/category",
       "targets": [
         {
           "name": "default",
