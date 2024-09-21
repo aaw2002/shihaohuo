@@ -1,5 +1,8 @@
 {
   "module": {
+    "requestPermissions": [{
+      "name": "ohos.permission.INTERNET"
+    }],
     "name": "phone",
     "type": "entry",
     "description": "$string:module_desc",
@@ -14,7 +17,10 @@
     "pages": "$profile:main_pages",
     "abilities": [
       {
+        //屏幕最小宽度331  2in1设备
+        "minWindowWidth": 331,
         "name": "EntryAbility",
+        "orientation": "auto_rotation_unspecified",
         "srcEntry": "./ets/entryability/EntryAbility.ets",
         "description": "$string:EntryAbility_desc",
         "icon": "$media:bengtie",

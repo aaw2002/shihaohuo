@@ -2,6 +2,7 @@ import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { BreakpointConstants } from 'basic';
+import { deviceInfo } from '@kit.BasicServicesKit';
 
 export default class EntryAbility extends UIAbility {
   private curBp: string = ''
@@ -50,7 +51,19 @@ export default class EntryAbility extends UIAbility {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
-    windowStage.loadContent('pages/Index', (err) => {
+    windowStage.loadContent('pages/Index',  (err) => {
+      if (deviceInfo.deviceType!='2in1'){
+        // 开启全屏
+        const win = windowStage.getMainWindowSync()
+        win.setWindowLayoutFullScreen(true)
+
+        // 获取安全区域
+        const top = win.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM).topRect
+        AppStorage.setOrCreate<number>(BreakpointConstants.TOP_SAFE_AREA, px2vp(top.height))
+        const bottom = win.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR)
+          .bottomRect
+        AppStorage.setOrCreate<number>(BreakpointConstants.BOTTOM_SAFE_AREA, px2vp(bottom.height))
+      }
       if (err.code) {
         hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
         return;

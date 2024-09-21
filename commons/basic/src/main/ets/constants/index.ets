@@ -10,4 +10,8 @@ export class BreakpointConstants {
   static readonly LG: string = 'lg';
   // AppStorage 中的 key
   static readonly BREAK_POINT_KEY: string = 'currentBreakpoint'
+  //顶部安全距离
+  static readonly TOP_SAFE_AREA: string = 'topHeight'
+  //底部安全距离
+  static readonly BOTTOM_SAFE_AREA: string = 'bottomHeight';
 }
