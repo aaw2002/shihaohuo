@@ -1,4 +1,5 @@
-import { axiosInstance, BreakpointConstants, BreakPointType, HttpResponse, Logger,ResponseType } from 'basic'
+import { axiosInstance, BreakpointConstants, BreakPointType, HttpResponse, Logger,
+  RequestAxios,ResponseType } from 'basic'
 import { DiscountGoodsComp, DiscountType } from '../components/DiscountGoodsComp'
 import { MkGoods } from '../components/MkGoods'
 import { Banner, CategoryItem, MkGoodsItem, Params } from '../viewmodel'
@@ -94,6 +95,8 @@ export struct HomeView {
         Logger.info(res)
       })
 
+    let res=await RequestAxios.get<string>('/home/banner')
+    Logger.warn(res.data.result)
   }
 
   getSpace(): number | undefined {
