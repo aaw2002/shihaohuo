@@ -30,11 +30,11 @@ export const getOneStopApi = async () => {
 }
 ///新鲜好物
 export const getNewGoodsApi = async () => {
-  let res=await RequestAxios.get<MkGoodsItem[]>('/home/new')
+  let res=await RequestAxios.get<MkGoodsItem[]>('/home/new',new Object({limit:8}))
   return res.data
 }
 //推荐列表
-export const getRecommendApi = async () => {
-  let res=await RequestAxios.get<MkGoodsItem[]>('/home/recommend')
+export const getRecommendApi = async (limit:number=8) => {
+  let res=await RequestAxios.get<MkGoodsItem[]>('/home/recommend',new Object({limit}))
   return res.data
 }

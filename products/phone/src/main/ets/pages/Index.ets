@@ -15,8 +15,9 @@ interface TabItem {
 struct Index {
   @State activeIndex: number = 0
   @StorageProp('currentBreakpoint') breakpoint: string = '';
+  @StorageProp('topHeight') topHeight: number = 0
   // @StorageProp('topHeight') topHeight: number = 0
-    @StorageProp(BreakpointConstants.BOTTOM_SAFE_AREA) bottomHeight:number=0
+  @StorageProp(BreakpointConstants.BOTTOM_SAFE_AREA) bottomHeight: number = 0
   list: TabItem[] = [
     { text: '首页', normal: $r('app.media.ic_public_home_normal'), active: $r('app.media.ic_public_home_active') },
     { text: '分类', normal: $r('app.media.ic_public_pro_normal'), active: $r('app.media.ic_public_pro_active') },
@@ -34,6 +35,7 @@ struct Index {
         TabContent() {
           if (index === 0) {
             HomeView()
+
           } else if (index === 1) {
             CategoryView()
           } else if (index === 2) {
@@ -45,13 +47,14 @@ struct Index {
         }
         .tabBar(this.TabItemBuilder(item, index))
       })
-    }.barPosition(this.breakpoint == BreakpointConstants.LG ? BarPosition.Start : BarPosition.End)
+    }
+    .barPosition(this.breakpoint == BreakpointConstants.LG ? BarPosition.Start : BarPosition.End)
     .vertical(this.breakpoint == BreakpointConstants.LG ? true : false)
     .scrollable(false)
     .onTabBarClick(index => {
       this.activeIndex = index
     })
-    .padding({bottom:this.bottomHeight})
+    .padding({ bottom: this.bottomHeight })
   }
 
   @Builder

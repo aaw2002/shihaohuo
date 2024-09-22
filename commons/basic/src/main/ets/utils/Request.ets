@@ -21,7 +21,7 @@ export type ResponseType<T> = AxiosResponse<HttpResponse<T>>
 
 export class RequestAxios {
   static get<T> (url:string,params?:object){
-    return axiosInstance.get<null,ResponseType<T> >(url,{params})
+    return axiosInstance.get<null,ResponseType<T> >(url, { params:params })
   }
   static post<T> (url:string,data?:object){
     return axiosInstance.post<null,ResponseType<T> >(url,data)
