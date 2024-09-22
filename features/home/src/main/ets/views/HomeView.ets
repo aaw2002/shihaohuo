@@ -1,5 +1,21 @@
-import { axiosInstance, BreakpointConstants, BreakPointType, HttpResponse, Logger,
-  RequestAxios,ResponseType } from 'basic'
+import {
+  axiosInstance,
+  BreakpointConstants,
+  BreakPointType,
+  HttpResponse,
+  Logger,
+  RequestAxios,
+  ResponseType
+} from 'basic'
+import {
+  getBannerApi,
+  getCategoryApi,
+  getHotGoodsApi,
+  getNewGoodsApi,
+  getOneStopApi,
+  getRecommendApi,
+  getSaleGoodsApi
+} from '../apis'
 import { DiscountGoodsComp, DiscountType } from '../components/DiscountGoodsComp'
 import { MkGoods } from '../components/MkGoods'
 import { Banner, CategoryItem, MkGoodsItem, Params } from '../viewmodel'
@@ -23,49 +39,48 @@ export struct HomeView {
   @State newGoods: MkGoodsItem[] = []
   // 推荐商品
   @State recommendGoods: MkGoodsItem[] = []
-
   @StorageProp(BreakpointConstants.TOP_SAFE_AREA) topHeight: number = 0
 
   // 生成模拟数据
   mockData() {
-    this.banners = new Array(6).fill({
-      id: "42",
-      imgUrl: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/banner/nuandong_sj.png",
-      hrefUrl: "/category/1181622006",
-      type: "1"
-    })
+    // this.banners = new Array(6).fill({
+    //   id: "42",
+    //   imgUrl: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/banner/nuandong_sj.png",
+    //   hrefUrl: "/category/1181622006",
+    //   type: "1"
+    // })
 
-    this.categories = new Array(10).fill({
-      id: "1181622001",
-      name: "气质女装",
-      picture: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png"
-    })
+    // this.categories = new Array(10).fill({
+    //   id: "1181622001",
+    //   name: "气质女装",
+    //   picture: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png"
+    // })
 
-    this.saleGoods = new Array(6).fill({
-      "id": "1111002",
-      "name": "剪出精致感，金致圆柄复古剪刀",
-      "desc": "轻薄设计，简约大方",
-      "price": "9.90",
-      "picture": "https://yanxuan-item.nosdn.127.net/4c6a9c8a579b00e5e9c7b002d15a33a2.jpg",
-      "orderNum": 172
-    },)
+    /* this.saleGoods = new Array(6).fill({
+       "id": "1111002",
+       "name": "剪出精致感，金致圆柄复古剪刀",
+       "desc": "轻薄设计，简约大方",
+       "price": "9.90",
+       "picture": "https://yanxuan-item.nosdn.127.net/4c6a9c8a579b00e5e9c7b002d15a33a2.jpg",
+       "orderNum": 172
+     },)*/
 
-    this.hotGoods = new Array(8).fill({
-      "id": "1135059",
-      "name": "手工八年老陈醋500毫升",
-      "desc": "地道醇香，醋酸浓郁",
-      "price": "30.00",
-      "picture": "https://yanxuan-item.nosdn.127.net/77da20e77b02830a26f931901ac1a9e0.png",
-      "orderNum": 147
-    },)
-    this.oneGoods = new Array(8).fill({
-      "id": "1135079",
-      "name": "免浸泡，12种谷物一次同享，五谷米400克",
-      "desc": "无需浸泡，同煮同熟",
-      "price": "9.90",
-      "picture": "https://yanxuan-item.nosdn.127.net/bfe70bd66efe94f2f18061c707d2a097.png",
-      "orderNum": 144
-    })
+    // this.hotGoods = new Array(8).fill({
+    //   "id": "1135059",
+    //   "name": "手工八年老陈醋500毫升",
+    //   "desc": "地道醇香，醋酸浓郁",
+    //   "price": "30.00",
+    //   "picture": "https://yanxuan-item.nosdn.127.net/77da20e77b02830a26f931901ac1a9e0.png",
+    //   "orderNum": 147
+    // },)
+    // this.oneGoods = new Array(8).fill({
+    //   "id": "1135079",
+    //   "name": "免浸泡，12种谷物一次同享，五谷米400克",
+    //   "desc": "无需浸泡，同煮同熟",
+    //   "price": "9.90",
+    //   "picture": "https://yanxuan-item.nosdn.127.net/bfe70bd66efe94f2f18061c707d2a097.png",
+    //   "orderNum": 144
+    // })
     this.newGoods = new Array(8).fill({
       "id": "4027998",
       "name": "亮碟多效合一洗涤块495g",
@@ -84,19 +99,77 @@ export struct HomeView {
     })
   }
 
+  /*
+  * 请求数据
+   */
+  async getData() {
+
+    let arr =
+      await Promise.allSettled([getBannerApi(), getCategoryApi(), getSaleGoodsApi(), getHotGoodsApi(), getOneStopApi(),
+        getNewGoodsApi(), getRecommendApi()])
+    if (arr[0].status == 'fulfilled') {
+      this.banners = arr[0].value.result
+    }
+    if (arr[1].status == 'fulfilled') {
+      this.categories = arr[1].value.result
+    }
+    if (arr[2].status == 'fulfilled') {
+      arr[2].value.result.subTypes.forEach((item) => {
+        this.saleGoods.push(...item.goodsItems.items)
+      })
+    }
+    if (arr[3].status == 'fulfilled') {
+      arr[3].value.forEach((item) => {
+        this.hotGoods.push(...item.goodsItems.items)
+      })
+    }
+    if (arr[4].status == 'fulfilled') {
+      arr[4].value.result.subTypes.forEach((item) => {
+        this.oneGoods.push(...item.goodsItems.items)
+      })
+    }
+    if (arr[5].status == 'fulfilled') {
+      this.newGoods = arr[5].value.result
+    }
+    if (arr[6].status == 'fulfilled') {
+      this.recommendGoods = arr[6].value.result
+    }
+
+    /* // 获取轮播图数据
+     // let res = await getBannerApi()
+     // this.banners = res.result
+     //获取分类列表
+     // let resCategory = await getCategoryApi()
+     // this.categories = resCategory.result
+     // 获取特惠推荐
+     // let resSale = await getSaleGoodsApi()
+     // let resSaleList = resSale.result.subTypes
+     // resSaleList.forEach((item) => {
+     //   this.saleGoods.push(...item.goodsItems.items)
+     // })
+     // 获取爆款推荐
+     // let resHot = await getHotGoodsApi()
+     // resHot.forEach((item) => {
+     //   this.hotGoods.push(...item.goodsItems.items)
+     // })
+     //一站买全
+     // let resOne = await getOneStopApi()
+     // resOne.result.subTypes.forEach((item) => {
+     //   this.oneGoods.push(...item.goodsItems.items)
+     // })
+     // // 获取新鲜好物
+     // let resNew = await getNewGoodsApi()
+     // this.newGoods = resNew.result
+     // //推荐列表
+     // let resRecommend = await getRecommendApi();
+     // this.recommendGoods = resRecommend.result*/
+  }
+
   async aboutToAppear(): Promise<void> {
     // mock数据
     this.mockData()
-    axiosInstance({
-      method: 'GET',
-      url: '/home/banner',
-    })
-      .then((res: ResponseType<string>) => {
-        Logger.info(res)
-      })
-
-    let res=await RequestAxios.get<string>('/home/banner')
-    Logger.warn(res.data.result)
+    await this.getData()
+    // Logger.warn(res.data.result)
   }
 
   getSpace(): number | undefined {
@@ -191,7 +264,7 @@ export struct HomeView {
             .borderRadius(20)
             .padding({ left: 12 })
           }
-          .padding({ left: 16, right: 16 ,top:this.topHeight})
+          .padding({ left: 16, right: 16, top: this.topHeight })
         }
         .width('100%')
 

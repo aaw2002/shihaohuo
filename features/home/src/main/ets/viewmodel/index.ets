@@ -24,6 +24,7 @@ export interface CategoryItemChild {
 export interface Banner {
   id: string;
   imgUrl: string;
+  hrefUrl: string;
   type: string;
 }
 
@@ -34,3 +35,26 @@ export interface Params {
   bg: ResourceStr,
   list: MkGoodsItem[]
 }
+export interface GoodsItems {
+  counts: number;
+  items: MkGoodsItem[];
+  page: number;
+  pages: number;
+  pageSize: number;
+}
+export interface iResult {
+  id: string;
+  subTypes: SubType[];
+  title: string;
+}
+
+export interface SubType {
+  goodsItems: GoodsItems;
+  id: string;
+  title: string;
+}
+
+
+
+
+
