@@ -1,4 +1,5 @@
-import { CategoryItem, CategoryItemChild } from 'basic'
+import { CategoryItem, CategoryItemChild, MkNavbar } from 'basic'
+import { promptAction } from '@kit.ArkUI'
 
 @Component
 export struct CategoryView {
@@ -9,12 +10,31 @@ export struct CategoryView {
     picture: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png"
   })
   @State activeIndex: number = 0
+  @StorageProp('topHeight') topHeight: number = 0
+
+  @Builder
+  titleBuilder() {
+    Button('别打扰邦政看片')
+      .layoutWeight(1)
+  }
 
   build() {
     Column() {
-      // MkNavbar({
-      // })
-      //   .border({ width: { bottom: 0.5 }, color: $r('[basic].color.under') })
+      MkNavbar({
+        title: '商品分类',
+        showLeftIcon: false,
+        rightIcon: $r('[basic].media.ic_public_search'),
+        showRightIcon: true,
+        rightClickHandler: () => {
+          promptAction.showToast({
+            message: '别打扰邦政看片',
+            alignment: Alignment.Center
+          })
+        },
+
+        customTitle: this.titleBuilder
+      })
+        .border({ width: { bottom: 0.5 }, color: $r('[basic].color.under') })
 
       Row() {
         Column() {
@@ -27,7 +47,10 @@ export struct CategoryView {
               .width('100%')
               .height(56)
               .onClick(() => {
-                this.activeIndex = i
+                animateTo({ duration: 300 }, () => {
+                  this.activeIndex = i
+                })
+
               })
 
           })
