@@ -25,7 +25,7 @@ struct Index {
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
   // 创建一个路由栈对象，并配置到 Navigation 组件中
-  pageStack: NavPathStack = new NavPathStack()
+  @Provide pageStack: NavPathStack = new NavPathStack()
 
   aboutToAppear(): void {
     Logger.warn(this.list)
