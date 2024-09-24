@@ -14,6 +14,7 @@ export struct CategoryView {
   @StorageProp('categoryData') categories: CategoryItem[] = []
   // 当前断点
   @StorageProp(BreakpointConstants.BREAK_POINT_KEY) breakpoint: string = ''
+  scroller: Scroller = new Scroller()
 
   build() {
     Column() {
@@ -47,7 +48,7 @@ export struct CategoryView {
                 animateTo({ duration: 300 }, () => {
                   this.activeIndex = i
                 })
-
+                this.scroller.scrollEdge(Edge.Top)
               })
 
           })
@@ -55,12 +56,12 @@ export struct CategoryView {
         .width(88)
         .border({ width: { right: 0.5 }, color: $r('[basic].color.under') })
 
-        Scroll() {
+        Scroll(this.scroller) {
           Column() {
             // 顶部图片
             Image(this.categories[this.activeIndex]?.picture)
               .width('100%')
-              .height( new BreakPointType({
+              .height(new BreakPointType({
                 sm: 134, md: 200, lg: 250
               }).getValue(this.breakpoint))
               .objectFit(ImageFit.Contain)
@@ -68,7 +69,7 @@ export struct CategoryView {
               .borderRadius(8)
               .margin({ bottom: 8 })
             GridRow({
-              columns:{sm:2,md:3,lg:4}, gutter: 8
+              columns: { sm: 2, md: 3, lg: 4 }, gutter: 8
             }) {
               // 子分类
               ForEach(this.categories[this.activeIndex]?.children, (sub: CategoryItemChild) => {
