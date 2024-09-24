@@ -6,6 +6,7 @@ function SearchViewBuilder() {
     SearchView()
   }
   .hideTitleBar(true)
+
 }
 
 @Component

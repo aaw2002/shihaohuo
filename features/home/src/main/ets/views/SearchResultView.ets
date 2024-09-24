@@ -1,4 +1,4 @@
-import { BreakpointConstants, BreakPointType, MkGoodsItem, RequestAxios } from 'basic'
+import { BreakpointConstants, BreakPointType, MkGoodsItem, MKPullToRefresh, RequestAxios } from 'basic'
 import { searchGoodsApi } from '../apis'
 import { MkGoods } from '../components/MkGoods'
 import { GoodsItems } from '../viewmodel'
@@ -146,6 +146,13 @@ export struct SearchResultView {
             field: item.field,
             sortField: this.params.sortField,
             sortMethod: this.params.sortMethod,
+            onClickItem: async (sortField: SortField, sortMethod: SortMethod) => {
+              // AlertDialog.show({ message: sortField + sortMethod })
+              this.params.sortField = sortField
+              this.params.sortMethod = sortMethod
+              let res = await searchGoodsApi(this.params)
+              this.data = res.pageData.items
+            }
 
           })
         })
@@ -159,42 +166,61 @@ export struct SearchResultView {
       .justifyContent(FlexAlign.SpaceBetween)
       .border({ width: { bottom: 0.5 }, color: $r('[basic].color.border') })
 
-      WaterFlow({ scroller: this.scroller }) {
-        ForEach(this.data, (item: MkGoodsItem) => {
-          FlowItem() {
-            MkGoods({ goods: item, smallImage: true })
-          }
-        })
-      }
-      .onReachEnd(async () => {
-
-        if (this.isEnd) {
-          this.isEnd = false
-          let length = this.data.length
-          this.params.page++
+      MKPullToRefresh({
+        data: $data,
+        scroller: this.scroller,
+        customList: () => {
+          this.FlowBuilder()
+        },
+        onRefresh: async () => {
+          //页码至一
+          this.params.page = 1
+          // 请求数据
           let res = await searchGoodsApi(this.params)
-          this.data = this.data.concat(res.pageData.items)
-          this.isEnd = true
-          if (length === this.data.length) {
-            promptAction.showToast({
-              message: '已经到头了',
-            })
-          } else {
-            promptAction.showToast({
-              message: '网络异常',
-            })
-          }
+          animateTo({ duration: 500 }, () => {
+            this.data = res.pageData.items
+          })
+
+          return '邦政温馨提示：刷新成功'
+        }
+      }).layoutWeight(1)
+
+    }
+  }
+
+  @Builder
+  FlowBuilder() {
+    WaterFlow({ scroller: this.scroller }) {
+      ForEach(this.data, (item: MkGoodsItem) => {
+        FlowItem() {
+          MkGoods({ goods: item, smallImage: true })
         }
       })
-      .columnsTemplate(new BreakPointType({
-        sm: '1fr 1fr',
-        md: '1fr 1fr 1fr',
-        lg: '1fr 1fr 1fr 1fr'
-      }).getValue(this.breakpoint))
-      .columnsGap(0.5)
-      .rowsGap(0.5)
-      .layoutWeight(1)
     }
+    // .onReachEnd(async () => {
+    //
+    //   if (this.isEnd) {
+    //     this.isEnd = false
+    //     let length = this.data.length
+    //     this.params.page++
+    //     let res = await searchGoodsApi(this.params)
+    //     this.data = this.data.concat(res.pageData.items)
+    //     if (length === this.data.length) {
+    //       promptAction.showToast({
+    //         message: '已经到头了',
+    //       })
+    //     }
+    //     this.isEnd = true
+    //   }
+    // })
+    .columnsTemplate(new BreakPointType({
+      sm: '1fr 1fr',
+      md: '1fr 1fr 1fr',
+      lg: '1fr 1fr 1fr 1fr'
+    }).getValue(this.breakpoint))
+    .columnsGap(0.5)
+    .rowsGap(0.5)
+    .layoutWeight(1)
   }
 }
 
@@ -210,9 +236,10 @@ struct SortItemComp {
   @Prop sortField: SortField = 'publishTime'
   // 父组件的排序方法
   @Prop sortMethod: SortMethod = 'desc'
-
   // TODO 点击筛选条件，回传  sortField 和 sortMethod 给父组件（回调函数）
+  onClickItem: (sortField: SortField, sortMethod: SortMethod) => void = () => {
 
+  }
 
   build() {
     Row() {
@@ -235,7 +262,11 @@ struct SortItemComp {
       .justifyContent(FlexAlign.Center)
     }
     .onClick(() => {
-
+      if (this.field == this.sortField) {
+        this.onClickItem(this.field, this.sortMethod == 'desc' ? 'asc' : 'desc')
+      } else {
+        this.onClickItem(this.field, 'desc')
+      }
     })
   }
 }

@@ -6,4 +6,6 @@ export * from "./src/main/ets/viewmodel/index";
 export * from "./src/main/ets/utils/Request";
 export * from "./src/main/ets/components/MkLoading";
 
-export * from "./src/main/ets/components/MkNavbar"
+export * from "./src/main/ets/components/MkNavbar";
+
+export { MKPullToRefresh } from "./src/main/ets/components/MKPullToRefresh"

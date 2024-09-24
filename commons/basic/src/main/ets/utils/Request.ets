@@ -30,6 +30,6 @@ export class RequestAxios {
     return axiosInstance.put<null,ResponseType<T> >(url,data)
   }
   static delete<T> (url:string,data?:object){
-    return axiosInstance.delete<null,ResponseType<T> >(url,{data})
+    return axiosInstance.delete<null,ResponseType<T> >(url,{params:data})
   }
 }
