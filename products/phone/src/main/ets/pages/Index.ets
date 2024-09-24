@@ -43,9 +43,9 @@ struct Index {
             } else if (index === 2) {
               CartView()
             } else {
-              Column(){
-                Button().onClick(()=>{
-                  this.pageStack.pushPath({name:'SearchView',param:'122'})
+              Column() {
+                Button().onClick(() => {
+                  this.pageStack.pushPath({ name: 'SearchView', param: '122' })
                 })
                 MyView()
               }
