@@ -24,37 +24,48 @@ struct Index {
     { text: '购物袋', normal: $r('app.media.ic_public_cart_normal'), active: $r('app.media.ic_public_cart_active') },
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
+  // 创建一个路由栈对象，并配置到 Navigation 组件中
+  pageStack: NavPathStack = new NavPathStack()
 
   aboutToAppear(): void {
     Logger.warn(this.list)
   }
 
   build() {
-    Tabs({ barPosition: BarPosition.End }) {
-      ForEach(this.list, (item: TabItem, index: number) => {
-        TabContent() {
-          if (index === 0) {
-            HomeView()
+    Navigation(this.pageStack) {
+      Tabs({ barPosition: BarPosition.End }) {
+        ForEach(this.list, (item: TabItem, index: number) => {
+          TabContent() {
+            if (index === 0) {
+              HomeView()
+            } else if (index === 1) {
+              CategoryView()
+            } else if (index === 2) {
+              CartView()
+            } else {
+              Column(){
+                Button().onClick(()=>{
+                  this.pageStack.pushPath({name:'SearchView',param:'122'})
+                })
+                MyView()
+              }
 
-          } else if (index === 1) {
-            CategoryView()
-          } else if (index === 2) {
-            CartView()
-          } else {
-            MyView()
+            }
+
           }
-
-        }
-        .tabBar(this.TabItemBuilder(item, index))
+          .tabBar(this.TabItemBuilder(item, index))
+        })
+      }
+      .barPosition(this.breakpoint == BreakpointConstants.LG ? BarPosition.Start : BarPosition.End)
+      .vertical(this.breakpoint == BreakpointConstants.LG ? true : false)
+      .scrollable(false)
+      .onTabBarClick(index => {
+        this.activeIndex = index
       })
-    }
-    .barPosition(this.breakpoint == BreakpointConstants.LG ? BarPosition.Start : BarPosition.End)
-    .vertical(this.breakpoint == BreakpointConstants.LG ? true : false)
-    .scrollable(false)
-    .onTabBarClick(index => {
-      this.activeIndex = index
-    })
-    .padding({ bottom: this.bottomHeight })
+      .padding({ bottom: this.bottomHeight })
+    }.mode(NavigationMode.Stack)
+    .hideTitleBar(true)
+
   }
 
   @Builder

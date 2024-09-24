@@ -4,7 +4,7 @@ import { window } from '@kit.ArkUI';
 import { BreakpointConstants } from 'basic';
 import { deviceInfo } from '@kit.BasicServicesKit';
 
-export default class EntryAbility extends UIAbility {
+export default class EntryAbility extends UIAbility  {
   private curBp: string = ''
 
   // 根据当前窗口尺寸更新断点
