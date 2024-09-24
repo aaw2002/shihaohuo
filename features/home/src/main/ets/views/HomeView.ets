@@ -134,6 +134,7 @@ export struct HomeView {
     // mock数据
 
     await this.getData()
+    AppStorage.setOrCreate('categoryData', this.categories)
     // Logger.warn(res.data.result)
   }
 

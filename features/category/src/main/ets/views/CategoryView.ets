@@ -4,19 +4,16 @@ import { promptAction } from '@kit.ArkUI'
 @Component
 export struct CategoryView {
   //  Mock分类数据
-  categories: CategoryItem[] = new Array(10).fill({
-    id: "1181622001",
-    name: "气质女装",
-    picture: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png"
-  })
+  // categories: CategoryItem[] = new Array(10).fill({
+  //   id: "1181622001",
+  //   name: "气质女装",
+  //   picture: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png"
+  // })
   @State activeIndex: number = 0
   @StorageProp('topHeight') topHeight: number = 0
+  @StorageProp('categoryData') categories: CategoryItem[] = []
 
-  @Builder
-  titleBuilder() {
-    Button('别打扰邦政看片')
-      .layoutWeight(1)
-  }
+
 
   build() {
     Column() {
@@ -32,7 +29,7 @@ export struct CategoryView {
           })
         },
 
-        customTitle: this.titleBuilder
+        // customTitle: this.titleBuilder
       })
         .border({ width: { bottom: 0.5 }, color: $r('[basic].color.under') })
 
@@ -61,7 +58,7 @@ export struct CategoryView {
         Scroll() {
           Column() {
             // 顶部图片
-            Image('https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png')
+            Image(this.categories[this.activeIndex].picture)
               .width('100%')
               .height(136)
               .objectFit(ImageFit.Contain)
@@ -70,14 +67,14 @@ export struct CategoryView {
               .margin({ bottom: 8 })
             GridRow({ columns: 2, gutter: 8 }) {
               // 子分类
-              ForEach(Array.from({ length: 10 }), (sub: CategoryItemChild) => {
+              ForEach(this.categories[this.activeIndex].children, (sub: CategoryItemChild) => {
                 GridCol() {
                   Column() {
                     // 图片
-                    Image('https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c2/qznz_bq.png?quality=95&imageView')
+                    Image(sub.picture)
                       .width(64)
                       .aspectRatio(1)
-                    Text('半裙')// 文本
+                    Text(sub.name)// 文本
                       .fontSize(14)
                       .fontColor($r('[basic].color.text'))
                       .margin({ top: 8 })
