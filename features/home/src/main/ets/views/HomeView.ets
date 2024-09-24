@@ -50,6 +50,7 @@ export struct HomeView {
   @State high: number = 0
   page: number = 1
   scroller: Scroller = new Scroller()
+  @Consume pageStack: NavPathStack
 
   async getEndData() {
     this.page++;
@@ -234,6 +235,9 @@ export struct HomeView {
                 .padding({ left: 12 })
               }
               .padding({ left: 16, right: 16, top: this.topHeight })
+              .onClick(()=>{
+                this.pageStack.pushPath({name:'SearchView'})
+              })
             }
             .width('100%')
 

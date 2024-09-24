@@ -7,6 +7,14 @@
       "data": {
         "description": "this is SearchView"
       }
+    },
+    {
+      "name": "SearchResultView",
+      "pageSourceFile": "src/main/ets/views/SearchResultView.ets",
+      "buildFunction": "SearchViewBuilder",
+      "data": {
+        "description": "this is SearchResultView"
+      }
     }
   ]
 }

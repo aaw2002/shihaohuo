@@ -15,6 +15,7 @@ export struct CategoryView {
   // 当前断点
   @StorageProp(BreakpointConstants.BREAK_POINT_KEY) breakpoint: string = ''
   scroller: Scroller = new Scroller()
+  @Consume pageStack: NavPathStack
 
   build() {
     Column() {
@@ -24,10 +25,7 @@ export struct CategoryView {
         rightIcon: $r('[basic].media.ic_public_search'),
         showRightIcon: true,
         rightClickHandler: () => {
-          promptAction.showToast({
-            message: '别打扰邦政看片',
-            alignment: Alignment.Center
-          })
+          this.pageStack.pushPath({ name: 'SearchView' })
         },
 
         // customTitle: this.titleBuilder
