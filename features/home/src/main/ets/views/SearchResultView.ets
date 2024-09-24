@@ -1,5 +1,8 @@
-import { BreakpointConstants, BreakPointType, MkGoodsItem } from 'basic'
+import { BreakpointConstants, BreakPointType, MkGoodsItem, RequestAxios } from 'basic'
+import { searchGoodsApi } from '../apis'
 import { MkGoods } from '../components/MkGoods'
+import { GoodsItems } from '../viewmodel'
+import { promptAction } from '@kit.ArkUI'
 
 // 联合类型
 export type SortField = 'publishTime' | 'orderNum' | 'price'
@@ -27,6 +30,27 @@ interface RouterParam {
   keyword: string
 }
 
+export interface IServiceData {
+  conditions: Conditions;
+  pageData: GoodsItems;
+
+}
+
+export interface Conditions {
+  brands: Brand[];
+  categories: null;
+}
+
+export interface Brand {
+  desc: null;
+  id: string;
+  logo: string;
+  name: string;
+  nameEn: string;
+  picture: string;
+  place: null;
+  type: null;
+}
 
 @Builder
 function SearchViewBuilder() {
@@ -38,19 +62,15 @@ function SearchViewBuilder() {
 
 @Component
 export struct SearchResultView {
+  //判断是否触底
+  @State isEnd: boolean = true
   @StorageProp('topHeight') topHeight: number = 0
   @Consume pageStack: NavPathStack
   @StorageProp(BreakpointConstants.BREAK_POINT_KEY) breakpoint: string = ''
   // 顶部安全区域
   @StorageProp('safeTop') safeTop: number = 0
   // mock 数据
-  @State data: MkGoodsItem[] = new Array(8).fill({
-    "id": "4033959",
-    "name": "3秒快速拆琴轻松保养odin奥丁12半音阶口琴",
-    "price": 329,
-    "picture": "https://yanxuan-item.nosdn.127.net/937a8e46a9284e8f7e00e13911ecfbe7.png",
-    "payCount": 0
-  })
+  @State data: MkGoodsItem[] = []
   // 查询参数
   @State
   @Watch('paramsChange')
@@ -71,9 +91,12 @@ export struct SearchResultView {
   // 控制器
   scroller = new Scroller()
 
-  aboutToAppear(): void {
-    // TODO 解析参数
-    // TODO 查询数据
+  async aboutToAppear(): Promise<void> {
+    // TODO 接收路由参数
+    this.params.keyword = this.pageStack.getParamByName('SearchResultView')[0] as string
+    let res = await searchGoodsApi(this.params)
+    this.data = res.pageData.items
+
   }
 
   paramsChange() {
@@ -91,7 +114,7 @@ export struct SearchResultView {
           .onClick(() => {
             this.pageStack.pop()
           })
-        Search({ placeholder: '商品关键字...', value: this.params.keyword })
+        Search({ placeholder: '商品关键字...', value: $$this.params.keyword })
           .searchIcon({ src: $r('[basic].media.ic_public_search'), color: $r('[basic].color.gray') })
           .placeholderColor($r('[basic].color.gray'))
           .placeholderFont({ size: 14 })
@@ -102,8 +125,10 @@ export struct SearchResultView {
           .margin(0)
           .height(36)
           .caretStyle({ color: $r('[basic].color.red') })
-          .onSubmit((value) => {
-
+          .onSubmit(async (value) => {
+            this.params.keyword = value
+            let res = await searchGoodsApi(this.params)
+            this.data = res.pageData.items
           })
       }
       .padding({ top: this.topHeight, right: 16 })
@@ -141,6 +166,26 @@ export struct SearchResultView {
           }
         })
       }
+      .onReachEnd(async () => {
+
+        if (this.isEnd) {
+          this.isEnd = false
+          let length = this.data.length
+          this.params.page++
+          let res = await searchGoodsApi(this.params)
+          this.data = this.data.concat(res.pageData.items)
+          this.isEnd = true
+          if (length === this.data.length) {
+            promptAction.showToast({
+              message: '已经到头了',
+            })
+          } else {
+            promptAction.showToast({
+              message: '网络异常',
+            })
+          }
+        }
+      })
       .columnsTemplate(new BreakPointType({
         sm: '1fr 1fr',
         md: '1fr 1fr 1fr',

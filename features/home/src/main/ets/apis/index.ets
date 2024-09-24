@@ -1,5 +1,6 @@
 import { CategoryItem, RequestAxios } from 'basic'
 import { Banner, iResult, MkGoodsItem, SubType } from '../viewmodel'
+import { IServiceData } from '../views/SearchResultView'
 
 // 获取轮播图数据
 export const getBannerApi = async () => {
@@ -32,6 +33,7 @@ export const getOneStopApi = async () => {
   return res.data
 }
 
+
 ///新鲜好物
 export const getNewGoodsApi = async () => {
   let res = await RequestAxios.get<MkGoodsItem[]>('/home/new', new Object({ limit: 8 }))
@@ -42,4 +44,13 @@ export const getNewGoodsApi = async () => {
 export const getRecommendApi = async (limit: number = 10) => {
   let res = await RequestAxios.get<MkGoodsItem[]>('/home/recommend', new Object({ limit }))
   return res.data
+}
+
+//搜索商品
+// 开发中
+// POST
+// /search/all
+export const searchGoodsApi = async (params: object) => {
+  let res = await RequestAxios.post<IServiceData>('/search/all', params)
+  return res.data.result
 }

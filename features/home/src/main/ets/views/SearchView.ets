@@ -43,7 +43,7 @@ export struct SearchView {
           })
 
         // 搜索框
-        Search({ placeholder: '商品关键字...', value: this.keyword })
+        Search({ placeholder: '商品关键字...', value: $$this.keyword })
           .searchIcon({ src: $r('[basic].media.ic_public_search'), color: $r('[basic].color.gray') })
           .placeholderColor($r('[basic].color.gray'))
           .placeholderFont({ size: 14 })
