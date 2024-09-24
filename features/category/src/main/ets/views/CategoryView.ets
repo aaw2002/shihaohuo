@@ -1,4 +1,4 @@
-import { CategoryItem, CategoryItemChild, MkNavbar } from 'basic'
+import { BreakpointConstants, BreakPointType, CategoryItem, CategoryItemChild, MkNavbar } from 'basic'
 import { promptAction } from '@kit.ArkUI'
 
 @Component
@@ -12,8 +12,8 @@ export struct CategoryView {
   @State activeIndex: number = 0
   @StorageProp('topHeight') topHeight: number = 0
   @StorageProp('categoryData') categories: CategoryItem[] = []
-
-
+  // 当前断点
+  @StorageProp(BreakpointConstants.BREAK_POINT_KEY) breakpoint: string = ''
 
   build() {
     Column() {
@@ -60,12 +60,16 @@ export struct CategoryView {
             // 顶部图片
             Image(this.categories[this.activeIndex]?.picture)
               .width('100%')
-              .height(136)
+              .height( new BreakPointType({
+                sm: 134, md: 200, lg: 250
+              }).getValue(this.breakpoint))
               .objectFit(ImageFit.Contain)
               .backgroundColor('#f6f6f6')
               .borderRadius(8)
               .margin({ bottom: 8 })
-            GridRow({ columns: 2, gutter: 8 }) {
+            GridRow({
+              columns:{sm:2,md:3,lg:4}, gutter: 8
+            }) {
               // 子分类
               ForEach(this.categories[this.activeIndex]?.children, (sub: CategoryItemChild) => {
                 GridCol() {
