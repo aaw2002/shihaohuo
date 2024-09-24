@@ -58,7 +58,7 @@ export struct CategoryView {
         Scroll() {
           Column() {
             // 顶部图片
-            Image(this.categories[this.activeIndex].picture)
+            Image(this.categories[this.activeIndex]?.picture)
               .width('100%')
               .height(136)
               .objectFit(ImageFit.Contain)
@@ -67,7 +67,7 @@ export struct CategoryView {
               .margin({ bottom: 8 })
             GridRow({ columns: 2, gutter: 8 }) {
               // 子分类
-              ForEach(this.categories[this.activeIndex].children, (sub: CategoryItemChild) => {
+              ForEach(this.categories[this.activeIndex]?.children, (sub: CategoryItemChild) => {
                 GridCol() {
                   Column() {
                     // 图片
