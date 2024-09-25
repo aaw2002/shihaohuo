@@ -1,7 +1,7 @@
 import { BreakpointConstants, BreakPointType, MkGoodsItem, MKPullToRefresh, RequestAxios } from 'basic'
 import { searchGoodsApi } from '../apis'
 import { MkGoods } from '../components/MkGoods'
-import { GoodsItems } from '../viewmodel'
+import { GoodsItems, GoodsItemsDataSource } from '../viewmodel'
 import { promptAction } from '@kit.ArkUI'
 
 // 联合类型
@@ -62,6 +62,8 @@ function SearchViewBuilder() {
 
 @Component
 export struct SearchResultView {
+  //底部安全距离
+  @StorageProp('bottomHeight') bottomHeight: number = 0
   //判断是否触底
   @State isEnd: boolean = true
   @StorageProp('topHeight') topHeight: number = 0
@@ -70,7 +72,8 @@ export struct SearchResultView {
   // 顶部安全区域
   @StorageProp('safeTop') safeTop: number = 0
   // mock 数据
-  @State data: MkGoodsItem[] = []
+  // @State data: MkGoodsItem[] = []
+  @State dataLazy: GoodsItemsDataSource = new GoodsItemsDataSource()
   // 查询参数
   @State
   @Watch('paramsChange')
@@ -90,16 +93,39 @@ export struct SearchResultView {
   ]
   // 控制器
   scroller = new Scroller()
+  //总页数
+  @State totalPage: number = 0
+  //当前页码
+  @State page: number = 0
 
   async aboutToAppear(): Promise<void> {
     // TODO 接收路由参数
     this.params.keyword = this.pageStack.getParamByName('SearchResultView')[0] as string
-    let res = await searchGoodsApi(this.params)
-    this.data = res.pageData.items
+    await this.getData()
 
   }
 
+  private async getData() {
+    this.params.page = 1
+    let res = await searchGoodsApi(this.params)
+    // this.data = res.pageData.items
+    this.dataLazy.reloadData(res.pageData.items)
+    this.totalPage = res.pageData.pages
+  }
+
   paramsChange() {
+  }
+
+  //触底加载更多
+  async lodeMore() {
+    if (this.params.page < this.totalPage) {
+      this.params.page++
+      let res = await searchGoodsApi(this.params)
+      // this.data.push(...res.pageData.items as MkGoodsItem[])
+      res.pageData.items.forEach((item: MkGoodsItem) => {
+        this.dataLazy.pushData(item)
+      })
+    }
   }
 
   build() {
@@ -128,7 +154,8 @@ export struct SearchResultView {
           .onSubmit(async (value) => {
             this.params.keyword = value
             let res = await searchGoodsApi(this.params)
-            this.data = res.pageData.items
+            // this.data = res.pageData.items
+            this.dataLazy.reloadData(res.pageData.items)
           })
       }
       .padding({ top: this.topHeight, right: 16 })
@@ -151,7 +178,8 @@ export struct SearchResultView {
               this.params.sortField = sortField
               this.params.sortMethod = sortMethod
               let res = await searchGoodsApi(this.params)
-              this.data = res.pageData.items
+              // this.data = res.pageData.items
+              this.dataLazy.reloadData(res.pageData.items)
             }
 
           })
@@ -167,7 +195,7 @@ export struct SearchResultView {
       .border({ width: { bottom: 0.5 }, color: $r('[basic].color.border') })
 
       MKPullToRefresh({
-        data: $data,
+        // data: $data,
         scroller: this.scroller,
         customList: () => {
           this.FlowBuilder()
@@ -178,11 +206,17 @@ export struct SearchResultView {
           // 请求数据
           let res = await searchGoodsApi(this.params)
           animateTo({ duration: 500 }, () => {
-            this.data = res.pageData.items
+            // this.data = res.pageData.items
+            this.dataLazy.reloadData(res.pageData.items)
           })
 
           return '邦政温馨提示：刷新成功'
+        },
+        onLoadMore: async () => {
+          this.lodeMore()
+          return '邦政温馨提示：加载成功'
         }
+
       }).layoutWeight(1)
 
     }
@@ -191,28 +225,14 @@ export struct SearchResultView {
   @Builder
   FlowBuilder() {
     WaterFlow({ scroller: this.scroller }) {
-      ForEach(this.data, (item: MkGoodsItem) => {
+      LazyForEach(this.dataLazy, (item: MkGoodsItem) => {
         FlowItem() {
           MkGoods({ goods: item, smallImage: true })
         }
       })
+
     }
-    // .onReachEnd(async () => {
-    //
-    //   if (this.isEnd) {
-    //     this.isEnd = false
-    //     let length = this.data.length
-    //     this.params.page++
-    //     let res = await searchGoodsApi(this.params)
-    //     this.data = this.data.concat(res.pageData.items)
-    //     if (length === this.data.length) {
-    //       promptAction.showToast({
-    //         message: '已经到头了',
-    //       })
-    //     }
-    //     this.isEnd = true
-    //   }
-    // })
+
     .columnsTemplate(new BreakPointType({
       sm: '1fr 1fr',
       md: '1fr 1fr 1fr',
@@ -221,6 +241,8 @@ export struct SearchResultView {
     .columnsGap(0.5)
     .rowsGap(0.5)
     .layoutWeight(1)
+
+    // .padding({ bottom: this.bottomHeight })
   }
 }
 
