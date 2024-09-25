@@ -3,6 +3,7 @@ import { searchGoodsApi } from '../apis'
 import { MkGoods } from '../components/MkGoods'
 import { GoodsItems, GoodsItemsDataSource } from '../viewmodel'
 import { promptAction } from '@kit.ArkUI'
+import { AudioSearchComp } from '../components/AudioSearchComp'
 
 // 联合类型
 export type SortField = 'publishTime' | 'orderNum' | 'price'
@@ -220,6 +221,7 @@ export struct SearchResultView {
       }).layoutWeight(1)
 
     }
+
   }
 
   @Builder

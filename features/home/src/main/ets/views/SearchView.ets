@@ -1,4 +1,5 @@
 import { window } from '@kit.ArkUI'
+import { AudioSearchComp } from '../components/AudioSearchComp'
 
 @Builder
 function SearchViewBuilder() {
@@ -14,11 +15,16 @@ export struct SearchView {
   @StorageProp('topHeight') topHeight: number = 0
   @State keyword: string = ''
   @Consume pageStack: NavPathStack
+  @StorageProp('bottomHeight') bottomHeight: number = 0
 
   aboutToAppear(): void {
     window.getLastWindow(getContext())
       .then((win) => {
         win.setWindowSystemBarProperties({ statusBarContentColor: '#FFFFFF' })
+      })
+    window.getLastWindow(getContext())
+      .then(win => {
+        win.getUIContext().setKeyboardAvoidMode(1)
       })
   }
 
@@ -68,6 +74,7 @@ export struct SearchView {
       })
 
       // SearchViewBuilder()
+      AudioSearchComp()
 
     }
   }
