@@ -1,5 +1,7 @@
 import { audio } from '@kit.AudioKit'
 import { speechRecognizer } from '@kit.CoreSpeechKit'
+import { permissionPlugin } from '../utils/PermissionPlugin'
+import { promptAction } from '@kit.ArkUI'
 
 export enum VoiceState {
   DEFAULT,
@@ -13,8 +15,10 @@ export struct AudioSearchComp {
   keyword: string = ''
   audioCapturer: audio.AudioCapturer | null = null
   asrEngine: speechRecognizer.SpeechRecognitionEngine | null = null
-  onChange: (keyword: string) => void = () => { }
-  onComplete: (keyword: string) => void = () => { }
+  onChange: (keyword: string) => void = () => {
+  }
+  onComplete: (keyword: string) => void = () => {
+  }
 
   async startRecord() {
 
@@ -22,6 +26,22 @@ export struct AudioSearchComp {
 
   async closeRecord() {
 
+  }
+
+  aboutToAppear(): void {
+    permissionPlugin.requestPermissions(['ohos.permission.MICROPHONE'])
+      .then(() => {
+        promptAction.showToast({
+          message: '麦克风权限已开启',
+
+        })
+      })
+      .catch(() => {
+        promptAction.showToast({
+          message: '麦克风权限未开启',
+        })
+        permissionPlugin.requestPermissionOnSetting(['ohos.permission.MICROPHONE'])
+      })
   }
 
   build() {

@@ -1,5 +1,12 @@
 {
   "module": {
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.MICROPHONE",
+        "reason": "$string:voice",
+        "usedScene": {}
+      },
+    ],
     "name": "home",
     "type": "shared",
     "description": "$string:shared_desc",
