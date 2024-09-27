@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\31750\\.ohos\\config\\default_hm_shihaohuo_Lrpi5TfLTMssX_qo_qZPQ9h0qMem_ngE-cLBwDr8Cx0=.cer",
-          "storePassword": "0000001BC85D07A5ADD463632A657B54C84A47E158E36FA532B6073018C420FB0EA643A8851CF55A55E293",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001BD7FA4DC7F035F64F1818FAFBC4BDCE2C922CD9E78A56A84B5857DEB780C0414527D208E81DF15B",
-          "profile": "C:\\Users\\31750\\.ohos\\config\\default_hm_shihaohuo_Lrpi5TfLTMssX_qo_qZPQ9h0qMem_ngE-cLBwDr8Cx0=.p7b",
+          "storePassword": "0000001B1A43C35CB75B7C674C843B37E5BA9A9715D64809CEA9300081F3BE723F4F2E03D3849186BA8843",
+          "certpath": "D:/Harmoney-KEY/shihaohuo/识好货.cer",
+          "keyAlias": "shihaohuo-key",
+          "keyPassword": "0000001B07150040534967C3963CD43A7DDD7DC75935112AFAB745D2B3C8FFD742EB825AE9A072D2EB6B8D",
+          "profile": "D:/Harmoney-KEY/shihaohuo/识好货Debug.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\31750\\.ohos\\config\\default_hm_shihaohuo_Lrpi5TfLTMssX_qo_qZPQ9h0qMem_ngE-cLBwDr8Cx0=.p12"
+          "storeFile": "D:/Harmoney-KEY/shihaohuo/shihaohuo.p12"
         }
       }
     ],

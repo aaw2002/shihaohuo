@@ -1,8 +1,16 @@
 {
   "module": {
-    "requestPermissions": [{
-      "name": "ohos.permission.INTERNET"
-    }],
+    "metadata": [
+      {
+        "name": "client_id",
+        "value": "112079015"
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.INTERNET"
+      }
+    ],
     "name": "phone",
     "type": "entry",
     "description": "$string:module_desc",
@@ -49,8 +57,12 @@
         "metadata": [
           {
             "name": "ohos.extension.backup",
-            "resource": "$profile:backup_config"
-          }
+            "resource": "$profile:backup_config",
+          },
+          //          {
+          //            "name": "client_id",
+          //            "value": "1512878859706482624"
+          //          }
         ]
       }
     ]
