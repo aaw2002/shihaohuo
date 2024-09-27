@@ -23,8 +23,8 @@ export struct MyView {
               Image($r('[basic].media.ic_public_settings'))
                 .width(24)
                 .aspectRatio(1)
-                .onClick(()=>{
-                  this.pageStack.pushPath({name:'SettingsView'})
+                .onClick(() => {
+                  this.pageStack.pushPath({ name: 'SettingsView' })
                 })
 
             }
@@ -33,7 +33,7 @@ export struct MyView {
 
             Row({ space: 16 }) {
               // 头像
-              Image($r('app.media.ic_user_avatar'))
+              Image(this.user.avatar || $r('app.media.ic_user_avatar'))
                 .width(40)
                 .aspectRatio(1)
                 .borderRadius(20)

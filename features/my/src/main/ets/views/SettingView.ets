@@ -1,4 +1,5 @@
-import { auth, MkNavbar, MkUser } from 'basic'
+import { auth, MkCell, MkCellGroup, MkNavbar, MkUser } from 'basic'
+import { audio } from '@kit.AudioKit'
 
 // import { MkCell, MkCellGroup } from '@mk/basic'
 
@@ -44,28 +45,67 @@ export struct SettingsView {
           }
         })
         Column({ space: 8 }) {
-          //   MkCellGroup() {
-          //     MkCell({
-          //       hasBorder: false, customLabel: () => {
-          //         this.ProfileBuilder()
-          //       }
-          //     })
-          //   }
 
-          //   MkCellGroup() {
-          //     MkCell({ label: '收货地址管理' })
-          //     MkCell({ label: '账号安全' })
-          //     MkCell({ label: '消息设置' })
-          //     MkCell({ label: '隐私设置' })
-          //     MkCell({ label: '通用设置', hasBorder: false })
-          //   }
 
-          //   MkCellGroup() {
-          //     MkCell({ label: '退出登录', hasBorder: false })
-          //       .onClick(() => {
+          MkCellGroup() {
+            MkCell({
+              hasBorder: false, customLabel: () => {
+                this.ProfileBuilder()
+              }
+            })
+          }
 
-          //       })
-          //   }
+          MkCellGroup() {
+            MkCell({ label: '收货地址管理' })
+            MkCell({ label: '账号安全' })
+            MkCell({ label: '消息设置' })
+            MkCell({ label: '隐私设置' })
+            MkCell({ label: '通用设置', hasBorder: false })
+          }
+
+          if (this.user.token) {
+            MkCellGroup() {
+              MkCell({ label: '退出登录', hasBorder: false })
+                .onClick(() => {
+
+                  AlertDialog.show({
+                    title: '退出登录',
+                    message: '确定退出登录？',
+                    autoCancel: true,
+
+                    buttons: [
+                      {
+                        value: '取消',
+                        fontColor: "#000",
+                        action: () => {
+                        }
+                      },
+                      {
+                        value: '确定',
+                        fontColor: "#fff",
+                        backgroundColor: '#000',
+                        action: () => {
+                          auth.removeUser()
+                          this.pageStack.pop()
+                        }
+                      }
+                    ]
+                  })
+                })
+            }
+
+          } else {
+            Button('登录')
+              .fontSize(20)
+              .fontColor($r('[basic].color.red'))
+              .height(50)
+              .backgroundColor('#fff')
+              .width('90%')
+              .onClick(() => {
+                this.pageStack.pushPath({ name: 'LoginView' })
+              })
+
+          }
         }
       }
       .width('100%')

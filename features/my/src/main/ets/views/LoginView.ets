@@ -16,6 +16,7 @@ export struct LoginView {
   @State valid: boolean = false
   @State agree: boolean = false
   @Consume pageStack: NavPathStack
+  @Consume isSetting: boolean
 
   onInput() {
     this.valid = this.account && this.password ? true : false
@@ -31,7 +32,9 @@ export struct LoginView {
       auth.saveUser(res);
       promptAction.showToast({ message: '登录成功' })
       //返回上一页
-      this.pageStack.pop()
+
+        this.pageStack.pop()
+
     } catch (e) {
       this.getUIContext().getFocusController().clearFocus()
       promptAction.showToast({ message: '登录失败请重新登录' })

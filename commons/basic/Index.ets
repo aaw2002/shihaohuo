@@ -14,4 +14,6 @@ export {MkGoods} from  "./src/main/ets/components/MkGoods";
 
 export {MkGuess} from "./src/main/ets/components/MkGuess";
 //用户信息故居类
-export {auth,MkUser} from "./src/main/ets/utils/Auth"
+export {auth,MkUser} from "./src/main/ets/utils/Auth";
+
+export {MkCell,MkCellGroup} from "./src/main/ets/components/MkCell"
