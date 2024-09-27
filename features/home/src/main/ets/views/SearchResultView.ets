@@ -1,6 +1,6 @@
 import { BreakpointConstants, BreakPointType, MkGoodsItem, MKPullToRefresh, RequestAxios } from 'basic'
 import { searchGoodsApi } from '../apis'
-import { MkGoods } from '../components/MkGoods'
+import { MkGoods } from 'basic'
 import { GoodsItems, GoodsItemsDataSource } from '../viewmodel'
 import { promptAction } from '@kit.ArkUI'
 import { AudioSearchComp } from '../components/AudioSearchComp'

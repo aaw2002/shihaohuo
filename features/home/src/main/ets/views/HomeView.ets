@@ -6,7 +6,8 @@ import {
   Logger,
   MkLoading,
   RequestAxios,
-  ResponseType
+  ResponseType,
+  MkGoods
 } from 'basic'
 import {
   getBannerApi,
@@ -18,7 +19,7 @@ import {
   getSaleGoodsApi
 } from '../apis'
 import { DiscountGoodsComp, DiscountType } from '../components/DiscountGoodsComp'
-import { MkGoods } from '../components/MkGoods'
+
 import { Banner, CategoryItem, GoodsItemsDataSource, MkGoodsItem, Params } from '../viewmodel'
 
 
@@ -129,6 +130,7 @@ export struct HomeView {
     Row() {
       MkLoading()
     }
+
   }
 
   async aboutToAppear(): Promise<void> {
@@ -402,6 +404,8 @@ export struct HomeView {
         .scrollBar(BarState.Off)
       }.onRefreshing(async () => {
         await this.refreshData()
+        // await this.getData()
+        // this.isRefresh= false
       })
       .transition(TransitionEffect.OPACITY.animation({ duration: 400 }))
 
@@ -411,7 +415,7 @@ export struct HomeView {
   }
 
   private async refreshData() {
-    await this.getData
+    await this.getData()
     this.isRefresh = false
     this.page = 1
   }

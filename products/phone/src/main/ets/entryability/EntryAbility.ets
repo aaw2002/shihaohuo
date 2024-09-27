@@ -1,7 +1,7 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { BreakpointConstants } from 'basic';
+import { auth, BreakpointConstants } from 'basic';
 import { deviceInfo } from '@kit.BasicServicesKit';
 
 export default class EntryAbility extends UIAbility  {
@@ -68,6 +68,9 @@ export default class EntryAbility extends UIAbility  {
         hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
         return;
       }
+      //初始化用户信息类
+      auth.initUser()
+
       hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
     });
   }

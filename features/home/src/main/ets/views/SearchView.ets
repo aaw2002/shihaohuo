@@ -74,7 +74,14 @@ export struct SearchView {
       })
 
       // SearchViewBuilder()
-      AudioSearchComp()
+      AudioSearchComp({
+        onChange: (keyword) => {
+          this.keyword = keyword
+        },
+        onComplete: (keyword) => {
+          this.pageStack.pushPath({ name: 'SearchResultView', param: keyword })
+        }
+      })
 
     }
   }

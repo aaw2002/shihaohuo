@@ -9,3 +9,9 @@ export * from "./src/main/ets/components/MkLoading";
 export * from "./src/main/ets/components/MkNavbar";
 
 export { MKPullToRefresh } from "./src/main/ets/components/MKPullToRefresh"
+
+export {MkGoods} from  "./src/main/ets/components/MkGoods";
+
+export {MkGuess} from "./src/main/ets/components/MkGuess";
+//用户信息故居类
+export {auth,MkUser} from "./src/main/ets/utils/Auth"
