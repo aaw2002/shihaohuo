@@ -23,6 +23,9 @@ export struct MyView {
               Image($r('[basic].media.ic_public_settings'))
                 .width(24)
                 .aspectRatio(1)
+                .onClick(()=>{
+                  this.pageStack.pushPath({name:'SettingsView'})
+                })
 
             }
             .width('100%')
