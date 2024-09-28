@@ -2,7 +2,8 @@ import { CartView } from 'cart';
 import { HomeView } from 'home';
 import { CategoryView } from 'category';
 import { MyView } from 'my';
-import { BreakpointConstants, Logger, MKNavPathStack } from 'basic'
+import { BreakpointConstants, EmitterKey, Logger, MKNavPathStack } from 'basic'
+import { emitter } from '@kit.BasicServicesKit';
 
 interface TabItem {
   text: string
@@ -25,15 +26,30 @@ struct Index {
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
   // 创建一个路由栈对象，并配置到 Navigation 组件中
-  @Provide pageStack: NavPathStack =MKNavPathStack
+  @Provide pageStack: NavPathStack = MKNavPathStack
 
   aboutToAppear(): void {
     Logger.warn(this.list)
+    this.registerEvent()
+  }
+
+  // tabsController = new TabsController()
+
+  // 注册 emmiter
+  registerEvent() {
+    // 切换 tab
+    emitter.on(EmitterKey.CHANGE_TAB, (data) => {
+  Logger.warn(data)
+      this.activeIndex = data.data?.index as number ||0
+      Logger.warn(this.activeIndex.toString())
+    })
   }
 
   build() {
     Navigation(this.pageStack) {
-      Tabs({ barPosition: BarPosition.End }) {
+      Tabs({
+        barPosition: BarPosition.End,index:this.activeIndex
+      }) {
         ForEach(this.list, (item: TabItem, index: number) => {
           TabContent() {
             if (index === 0) {

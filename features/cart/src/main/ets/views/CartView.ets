@@ -1,4 +1,5 @@
-import { auth, MkGuess, MkNavbar, MkUser, MKDialogLoading, CartGoodsModel, CartGoods } from 'basic'
+import { auth, MkGuess, MkNavbar, MkUser, MKDialogLoading, CartGoodsModel, CartGoods, MkEmpty, EmitterKey } from 'basic'
+import { emitter } from '@kit.BasicServicesKit'
 
 @Component
 export struct CartView {
@@ -29,7 +30,7 @@ export struct CartView {
   }
 
   dialog = new CustomDialogController({
-    builder: MKDialogLoading(),
+    builder: MKDialogLoading({ message: '' }),
     customStyle: true,
     alignment: DialogAlignment.Center,
     maskColor: '#00000000'
@@ -79,13 +80,31 @@ export struct CartView {
             }, (cart: CartGoods) => cart.skuId)
           } else {
             ListItem() {
-              Text('无商品')
+              MkEmpty({
+                tip: '购物车什么都没有',
+                buttonText: '去首页逛逛',
+                onClickButton: () => {
+                  // AlertDialog.show({ message: '邦政的幸福生活' })
+                  emitter.emit(EmitterKey.CHANGE_TAB, {
+                    data: {
+                      index: 0
+                    }
+                  })
+                }
+
+              })
             }
           }
         } else {
           // 未登录
           ListItem() {
-            Text('未登录')
+            MkEmpty({
+              tip: '您还未登陆~',
+              buttonText: '请先登录',
+              onClickButton: () => {
+                // 去登陆也
+              }
+            })
           }
         }
         ListItem() {

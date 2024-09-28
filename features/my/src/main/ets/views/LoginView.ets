@@ -1,6 +1,7 @@
-import { auth, MkNavbar } from 'basic'
+import { auth, EmitterKey, MkNavbar } from 'basic'
 import { promptAction } from '@kit.ArkUI'
 import { LoginApi } from '../apis'
+import { emitter } from '@kit.BasicServicesKit'
 
 @Builder
 function LoginViewBuilder() {
@@ -30,7 +31,6 @@ export struct LoginView {
       //持久化登录信息
       auth.saveUser(res);
       promptAction.showToast({ message: '登录成功' })
-
       //返回上一页
       this.pageStack.pop()
 

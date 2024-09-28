@@ -1,4 +1,6 @@
 // commons/basic/src/main/ets/constants/index.ets
+import { emitter } from '@kit.BasicServicesKit';
+
 export class BreakpointConstants {
   // 手表等超小屏
   static readonly XS: string = 'xs';
@@ -14,4 +16,11 @@ export class BreakpointConstants {
   static readonly TOP_SAFE_AREA: string = 'topHeight'
   //底部安全距离
   static readonly BOTTOM_SAFE_AREA: string = 'bottomHeight';
+
+
+}
+
+export class EmitterKey {
+  // 切换到指定的 tab
+  static CHANGE_TAB: emitter.InnerEvent = { eventId: 10001 }
 }
