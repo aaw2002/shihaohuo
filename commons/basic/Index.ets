@@ -27,3 +27,5 @@ export { MkCell, MkCellGroup } from "./src/main/ets/components/MkCell";
 
 //导航栈
 export { MKNavPathStack } from './src/main/ets/utils/MKNavPathStack';
+//
+export {MKDialogLoading} from './src/main/ets/components/MkDialogLoading'

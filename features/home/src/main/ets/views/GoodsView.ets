@@ -1,8 +1,9 @@
-import { HmSku } from '@ohmos/sku'
+import { HmSku, Sku } from '@ohmos/sku'
 import { BreakpointConstants, BreakPointType, Logger, MkGoodsItem, MkGuess, MkNavbar, MKNavPathStack } from 'basic'
 import { Goods } from '../viewmodel'
-import { window } from '@kit.ArkUI'
+import { promptAction, window } from '@kit.ArkUI'
 import { MKDialogLoading } from '../components/MkDialogLoading'
+import { getGoodsApi } from '../apis'
 
 
 @Builder
@@ -13,7 +14,8 @@ function GoodsViewBuilder() {
 
 @Component
 export struct GoodsView {
-  @StorageProp('safeBottom') safeBottom: number = 0
+  @StorageProp('bottomHeight') bottomHeight: number = 0
+  // @StorageProp('safeBottom') safeBottom: number = 0
   @State goods: Goods = {} as Goods
   @State activeIndex: number = 0
   @State showSheet: boolean = false
@@ -22,10 +24,12 @@ export struct GoodsView {
   @State
   sku: HmSku = {} as HmSku
   scroller = new Scroller()
-   dialog = new CustomDialogController({
-  builder: MKDialogLoading(),
-  customStyle: true
-})
+  dialog = new CustomDialogController({
+    builder: MKDialogLoading(),
+    customStyle: true
+  })
+  // tabs
+  tabs: string[] = ['商品', '评价', '详情', '推荐']
 
   setStatusBar() {
     window.getLastWindow(getContext())
@@ -37,16 +41,47 @@ export struct GoodsView {
   async aboutToAppear() {
     // let arr = MKNavPathStack.getParamByName('GoodsView') as Goods[]
     // this.goods = arr[arr.length-1]
-    this.dialog.open()
+    // this.dialog.open()
+    //基本数据源
     this.goods = MKNavPathStack.getParamByName('GoodsView').pop() as Goods
     // Logger.warn(this.goods)
+    // 获取数据
+    this.getData()
     // 接收并解析数据
     this.setStatusBar()
+  }
+
+  async getData() {
+    try {
+      this.dialog.open()
+      this.goods = await getGoodsApi(this.goods.id)
+      this.dialog.close()
+    } catch (e) {
+      this.dialog.close()
+      promptAction.showToast({
+        message: '加载失败',
+        alignment: Alignment.Center
+      })
+    }
   }
 
   @Builder
   CustomTitleBuilder() {
     // 楼层切换
+    Row({ space: 10 }) {
+      ForEach(this.tabs, (item: string, index: number) => {
+        Text(item)
+          .onClick(() => {
+            animateTo({ duration: 300, curve: Curve.Linear }, () => {
+              this.activeIndex = index
+              this.scroller.scrollToIndex(index)
+            })
+          })
+          .fontColor(this.activeIndex == index ? $r('[basic].color.black') : $r('[basic].color.gray'))
+      })
+    }
+
+    Blank()
     Image($r('[basic].media.ic_public_shared'))
       .iconButton()
   }
@@ -54,7 +89,7 @@ export struct GoodsView {
   @Builder
   AddCartBuilder() {
     Column() {
-      Text('已选: ' + '')
+      Text('已选: ' + (this.sku.specsText || ''))
         .fontWeight(300)
         .width('100%')
         .fontColor($r('[basic].color.black'))
@@ -63,7 +98,7 @@ export struct GoodsView {
         .maxLines(1)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
       Row({ space: 10 }) {
-        Image(this.goods.mainPictures?.[0])
+        Image(this.sku.picture||this.goods.mainPictures?.[0])
           .alt($r('app.media.ic_sku_img'))
           .width(80)
           .height(80)
@@ -71,15 +106,15 @@ export struct GoodsView {
           .borderRadius(4)
         Column() {
           Row() {
-            Text('现价¥')
+            Text('现价¥'+ '')
               .fontSize(14)
               .fontColor($r('[basic].color.black'))
               .offset({ y: -4 })
-            Text(this.goods.price)
+            Text(this.sku.price||this.goods.price)
               .fontSize(24)
               .fontColor($r('[basic].color.black'))
               .fontWeight(500)
-            Text('原价¥' + (this.goods.price))
+            Text('原价¥' + (this.sku.oldPrice||this.goods.price))
               .fontSize(12)
               .fontColor($r('[basic].color.gray'))
               .margin({ left: 10 })
@@ -93,8 +128,18 @@ export struct GoodsView {
 
           Row({ space: 10 }) {
             // 计数器
+            Counter() {
+              Text(this.count.toString())
+            }.onInc(() => {
+              this.count++
+            })
+            .onDec(() => {
+              this.count--
+            })
+            .enableDec(this.count > 1)
+            .enableInc(this.count <= this.goods.inventory)
 
-            Text(`库存充足`)
+            Text(`库存充足`+this.goods?.inventory)
               .fontSize(12)
               .fontColor($r('[basic].color.gray'))
           }
@@ -113,13 +158,13 @@ export struct GoodsView {
       List() {
         ListItem() {
           // Sku 组件
-          //  MKSku({
-          //   specs: this.goods.specs,
-          //   skus: this.goods.skus,
-          //   onSkuChange: (sku: HmSku) => {
-          //     this.sku = sku
-          //   }
-          // })
+           Sku({
+            specs: this.goods.specs,
+            skus: this.goods.skus,
+            onSkuChange: (sku: HmSku) => {
+              this.sku = sku
+            }
+          })
         }
       }
       .layoutWeight(1)
@@ -140,7 +185,7 @@ export struct GoodsView {
       left: 16,
       right: 16,
       top: 16,
-      bottom: this.safeBottom || 16
+      bottom: this.bottomHeight || 16
     })
   }
 
@@ -218,7 +263,7 @@ export struct GoodsView {
         }
         .height(54)
         .width('100%')
-        .margin({ bottom: this.safeBottom })
+        .margin({ bottom: this.bottomHeight })
       }
       .height('100%')
       .bindSheet($$this.showSheet, this.AddCartBuilder(),
