@@ -1,6 +1,8 @@
+import { MKNavPathStack } from '../utils/MKNavPathStack'
 import { MkGoodsItem } from '../viewmodel'
 
 @Component
+  //商品组件
 export struct MkGoods {
   goods: MkGoodsItem = {} as MkGoodsItem
   smallImage: boolean = false
@@ -50,5 +52,8 @@ export struct MkGoods {
     .backgroundColor($r('app.color.white'))
     .borderRadius(8)
     .clip(true)
+    .onClick(() => {
+      MKNavPathStack.pushPath({ name: 'GoodsView' })
+    })
   }
 }

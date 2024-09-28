@@ -1,3 +1,5 @@
+import { HmSku, HmSpec } from '@ohmos/sku'
+
 export interface MkGoodsItem {
   id: string
   name: string
@@ -54,6 +56,24 @@ export interface SubType {
   title: string;
 }
 
+// 其他略
+export interface GoodsProperty {
+  name: string;
+  value: string;
+}
+
+export interface GoodsDetail {
+  pictures: string[];
+  properties: GoodsProperty[];
+}
+
+export interface Goods extends MkGoodsItem {
+  inventory: number
+  mainPictures: string[]
+  details: GoodsDetail
+  specs: HmSpec[]
+  skus: HmSku[]
+}
 // 其他略
 class BasicDataSource implements IDataSource {
   private listeners: DataChangeListener[] = [];
@@ -147,6 +167,7 @@ export class GoodsItemsDataSource extends BasicDataSource {
     this.notifyDataReload()
   }
 }
+
 
 
 
