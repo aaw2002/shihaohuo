@@ -2,7 +2,7 @@ import { CartView } from 'cart';
 import { HomeView } from 'home';
 import { CategoryView } from 'category';
 import { MyView } from 'my';
-import { BreakpointConstants, Logger } from 'basic'
+import { BreakpointConstants, Logger, MKNavPathStack } from 'basic'
 
 interface TabItem {
   text: string
@@ -25,7 +25,7 @@ struct Index {
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
   // 创建一个路由栈对象，并配置到 Navigation 组件中
-  @Provide pageStack: NavPathStack = new NavPathStack()
+  @Provide pageStack: NavPathStack =MKNavPathStack
 
   aboutToAppear(): void {
     Logger.warn(this.list)
