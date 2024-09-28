@@ -1,7 +1,8 @@
 import { HmSku } from '@ohmos/sku'
-import { MkGoodsItem, MkGuess, MkNavbar } from 'basic'
+import { BreakpointConstants, BreakPointType, Logger, MkGoodsItem, MkGuess, MkNavbar, MKNavPathStack } from 'basic'
 import { Goods } from '../viewmodel'
 import { window } from '@kit.ArkUI'
+import { MKDialogLoading } from '../components/MkDialogLoading'
 
 
 @Builder
@@ -21,7 +22,10 @@ export struct GoodsView {
   @State
   sku: HmSku = {} as HmSku
   scroller = new Scroller()
-
+   dialog = new CustomDialogController({
+  builder: MKDialogLoading(),
+  customStyle: true
+})
 
   setStatusBar() {
     window.getLastWindow(getContext())
@@ -31,6 +35,11 @@ export struct GoodsView {
   }
 
   async aboutToAppear() {
+    // let arr = MKNavPathStack.getParamByName('GoodsView') as Goods[]
+    // this.goods = arr[arr.length-1]
+    this.dialog.open()
+    this.goods = MKNavPathStack.getParamByName('GoodsView').pop() as Goods
+    // Logger.warn(this.goods)
     // 接收并解析数据
     this.setStatusBar()
   }
@@ -143,6 +152,9 @@ export struct GoodsView {
           customTitle: () => {
             this.CustomTitleBuilder()
           }
+        , leftClickHandler: () => {
+            MKNavPathStack.pop()
+          }
         })
         Column() {
           List({ scroller: this.scroller }) {
@@ -247,6 +259,7 @@ function buyButton(color: ResourceStr, isLeft: boolean) {
 struct GoodsInfoComp {
   @Prop goods: Goods = {} as Goods
   @Link showSheet: boolean
+  @StorageProp(BreakpointConstants.BREAK_POINT_KEY) breakpoint: string = '';
 
   build() {
     Column() {
@@ -255,6 +268,7 @@ struct GoodsInfoComp {
         Swiper() {
           ForEach(this.goods.mainPictures, (src: string) => {
             Image(src)
+              .width('90%')
           })
         }
         .cachedCount(5)
@@ -273,7 +287,7 @@ struct GoodsInfoComp {
       Column() {
         Text() {
           Span('¥ ')
-          Span(this.goods.price)
+          Span(this.goods.price.toString())
             .fontSize(24)
         }
         .width('100%')

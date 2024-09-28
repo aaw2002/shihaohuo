@@ -1,3 +1,4 @@
+import { Logger } from '../../../../Index'
 import { MKNavPathStack } from '../utils/MKNavPathStack'
 import { MkGoodsItem } from '../viewmodel'
 
@@ -53,7 +54,8 @@ export struct MkGoods {
     .borderRadius(8)
     .clip(true)
     .onClick(() => {
-      MKNavPathStack.pushPath({ name: 'GoodsView' })
+      // Logger.info(this.goods)
+      MKNavPathStack.pushPath({ name: 'GoodsView' ,param: this.goods})
     })
   }
 }
