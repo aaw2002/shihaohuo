@@ -1,9 +1,20 @@
 import { HmSku, Sku } from '@ohmos/sku'
-import { BreakpointConstants, BreakPointType, Logger, MkGoodsItem, MkGuess, MkNavbar, MKNavPathStack } from 'basic'
+import {
+  auth,
+  BreakpointConstants,
+  BreakPointType,
+  cart,
+  Logger,
+  MkGoodsItem,
+  MkGuess,
+  MkNavbar,
+  MKNavPathStack
+} from 'basic'
 import { Goods } from '../viewmodel'
 import { promptAction, window } from '@kit.ArkUI'
 import { MKDialogLoading } from '../components/MkDialogLoading'
 import { getGoodsApi } from '../apis'
+import { audio } from '@kit.AudioKit'
 
 
 @Builder
@@ -98,7 +109,7 @@ export struct GoodsView {
         .maxLines(1)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
       Row({ space: 10 }) {
-        Image(this.sku.picture||this.goods.mainPictures?.[0])
+        Image(this.sku.picture || this.goods.mainPictures?.[0])
           .alt($r('app.media.ic_sku_img'))
           .width(80)
           .height(80)
@@ -106,15 +117,15 @@ export struct GoodsView {
           .borderRadius(4)
         Column() {
           Row() {
-            Text('现价¥'+ '')
+            Text('现价¥' + '')
               .fontSize(14)
               .fontColor($r('[basic].color.black'))
               .offset({ y: -4 })
-            Text(this.sku.price||this.goods.price)
+            Text(this.sku.price || this.goods.price)
               .fontSize(24)
               .fontColor($r('[basic].color.black'))
               .fontWeight(500)
-            Text('原价¥' + (this.sku.oldPrice||this.goods.price))
+            Text('原价¥' + (this.sku.oldPrice || this.goods.price))
               .fontSize(12)
               .fontColor($r('[basic].color.gray'))
               .margin({ left: 10 })
@@ -139,7 +150,7 @@ export struct GoodsView {
             .enableDec(this.count > 1)
             .enableInc(this.count <= this.goods.inventory)
 
-            Text(`库存充足`+this.goods?.inventory)
+            Text(`库存充足` + this.goods?.inventory)
               .fontSize(12)
               .fontColor($r('[basic].color.gray'))
           }
@@ -158,7 +169,7 @@ export struct GoodsView {
       List() {
         ListItem() {
           // Sku 组件
-           Sku({
+          Sku({
             specs: this.goods.specs,
             skus: this.goods.skus,
             onSkuChange: (sku: HmSku) => {
@@ -173,7 +184,46 @@ export struct GoodsView {
       Row() {
         Button(this.loading ? '加入中...' : '加入购物袋')
           .buyButton($r('[basic].color.black'), true)
-          .onClick(() => {
+          .onClick(async () => {
+            //判断用户是否登录
+            if (auth.getUser().token) {
+              // 非空判断
+              if (this.sku.id) {
+                try {
+                  this.dialog.open()
+                  await cart.add({
+                    skuId: this.sku.id,
+                    count: this.count
+                  })
+                  this.dialog.close()
+                  promptAction.showToast({
+                    message: '加入购物袋成功',
+                    alignment: Alignment.Center
+                  })
+                  this.showSheet = false
+                } catch (e) {
+                  this.dialog.close()
+                  promptAction.showToast({
+                    message: '网络异常，请检查网络'+JSON.stringify(e),
+                    alignment: Alignment.Center
+                  })
+                  Logger.info(e,'购物车添加失败')
+                }
+
+
+              } else {
+                promptAction.showToast({
+                  message: '请选择商品规格',
+                  alignment: Alignment.Center
+                })
+              }
+            } else {
+              promptAction.showToast({
+                message: '登录过期请前往登录',
+                alignment: Alignment.Center
+              })
+              MKNavPathStack.pushPath({ name: 'LoginView' })
+            }
           })
         Button('立即购买')
           .buyButton($r('[basic].color.red'), false)
