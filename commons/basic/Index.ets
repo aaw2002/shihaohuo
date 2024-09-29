@@ -31,5 +31,5 @@ export { MKNavPathStack } from './src/main/ets/utils/MKNavPathStack';
 //弹窗
 export { MKDialogLoading } from './src/main/ets/components/MkDialogLoading'
 
-//
+//空页
 export { MkEmpty } from './src/main/ets/components/MkEmpty'
